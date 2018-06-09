@@ -1,0 +1,34 @@
+<html>
+
+<head>
+    <title>Animator 2D</title>
+    <script src= "./node_modules/agraph/AGraph.js"> </script>
+    <script src= "./model/m_model.js"> </script>
+    <script src= "./view/v_rendering_agraph.js"> </script>
+    <script src= "./controller/c_creating_rectangle.js"> </script>
+    <script src= "./controller/c_creating_circle.js"> </script>
+    <script src= "./controller/c_main.js"> </script>
+    <script>
+        function notify(evt){alert(evt.target.id);
+            let id = parseInt(evt.target.id);
+            let ent = MD.g.getEntity(id);
+            console.log(ent);
+        }
+    </script>
+</head>
+
+<body>
+    <button onclick="switching_rectangle()">rectangle</button>
+    <button onclick="switching_circle()">circle</button>
+    <button onclick="switching_select()">select</button>
+    <div id="status"></div>
+    <div id="output"></div>
+    <script type="text/javascript">
+        //document.getElementById("output").innerHTML = JSON.stringify(MD.g);
+        //let svg_attr={tag:"svg", width:700, height:500, onmousedown:"svg_onmousedown()"};
+        document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+        display_status();
+    </script>
+</body>
+
+</html>
