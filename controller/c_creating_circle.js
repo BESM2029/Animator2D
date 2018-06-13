@@ -9,7 +9,7 @@ circle_creator = function(r, g) {
         var dim = target.getBoundingClientRect();
         var x = e.clientX - dim.left;
         var y = e.clientY - dim.top;
-        this.g.addVtx(this.g.curr_id++, {tag:"circle", cx:x, cy:y, r:this.r, style:"fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)", onclick:"top.notify(evt)"});
+        this.g.addVtx(this.g.curr_id++, {tag:"circle", cx:x, cy:y, r:this.r, style:"fill:rgb(0,0,255); stroke-width:1; stroke:rgb(0,0,0)", onclick:"top.notify(evt)"});
         //alert(e);
     }
 }
