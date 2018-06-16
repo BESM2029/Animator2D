@@ -12,36 +12,31 @@
     }
     return str;
 }
- function getSelectedObjectStr(obj) {
+function getSelectedSmallRectangleStr(obj, ii, jj) {
     let str = "rect" + " ";
     if (obj.tag == "circle") {
-        let x = obj.cx - obj.r;
-        let y = obj.cy - obj.r;
-        let w = obj.r*2;
-        let h = obj.r*2;
-        str += attrStr("x", x) + attrStr("y", y) + attrStr("width", w) + attrStr("height", h)
-            + 'stroke="green" stroke-width="1" fill-opacity="0"';
-            /*
-            + "rect " + attrStr("x", x1) + attrStr("y", y1) + 'width="2" height="2" stroke-width="0" fill="green"'
-            + "rect " + attrStr("x", obj.cx) + attrStr("y", y1) + 'width="2" height="2" stroke-width="0" fill="green"'
-            + "rect " + attrStr("x", x2) + attrStr("y", y1) + 'width="2" height="2" stroke-width="0" fill="green"'
-            + "rect " + attrStr("x", x1) + attrStr("y", obj.cy) + 'width="2" height="2" stroke-width="0" fill="green"'
-            + "rect " + attrStr("x", x2) + attrStr("y", obj.cy) + 'width="2" height="2" stroke-width="0" fill="green"'
-            + "rect " + attrStr("x", x1) + attrStr("y", y2) + 'width="2" height="2" stroke-width="0" fill="green"'
-            + "rect " + attrStr("x", obj.cx) + attrStr("y", y2) + 'width="2" height="2" stroke-width="0" fill="green"'
-            + "rect " + attrStr("x", x2) + attrStr("y", y2) + 'width="2" height="2" stroke-width="0" fill="green"';
-            */
+        let index_x = [obj.cx - obj.r - 2, obj.cx - 2, obj.cx + obj.r - 2];
+        let index_y = [obj.cy - obj.r - 2, obj.cy - 2, obj.cy + obj.r - 2];
+        str += attrStr("x", index_x[ii]) + attrStr("y", index_y[jj]) + 'width="4" height="4" stroke-width="0" fill="green"';
     }
-    return str;
-}
-function getSelectedObjectStr2(obj, ii, jj) {
-    let str = "rect" + " ";
-    if (obj.tag == "circle") {
-        let index_x = [obj.cx - obj.r - 2, obj.cx - 2, obj.cx + obj.r - 2]
-        let index_y = [obj.cy - obj.r - 2, obj.cy - 2, obj.cy + obj.r - 2]
+    else if (obj.tag == "rect") {
+        let index_x = [obj.x - 2, obj.x + (obj.width/2) - 2, obj.x + obj.width - 2];
+        let index_y = [obj.y - 2, obj.y + (obj.height/2) - 2, obj.y + obj.height - 2];
         str += attrStr("x", index_x[ii]) + attrStr("y", index_y[jj]) + 'width="4" height="4" stroke-width="0" fill="green"';
     }
     return str;
+}
+function getSelectedIndicatorsStr(obj) {
+    let answer = "";
+    for(ii = 0; ii < 3; ii ++) {
+        for(jj = 0; jj < 3; jj ++) {
+            if(ii == 1 && jj == 1) {continue;}
+            else {
+                answer += '<' + getSelectedSmallRectangleStr(obj, ii, jj) + '/>';
+            }
+        }
+    }
+    return answer;
 }
 /*
 function render(svg_attr, g) {
@@ -59,14 +54,8 @@ function render(g, width, height) {
     for( let id in g.VE) {
         let elem = g.getEntity(id);
         innerhtml += '<' + getTagAndAttributeStr(elem) + '/>';
-        innerhtml += '<' + getSelectedObjectStr(elem) + '/>';
-        for(ii = 0; ii < 3; ii ++) {
-            for(jj = 0; jj < 3; jj ++) {
-                if(ii == 1 && jj == 1) {continue;}
-                else {
-                   innerhtml += '<' + getSelectedObjectStr2(elem, ii, jj) + '/>';
-                }
-            }
+        if(elem.selected == true) {
+            innerhtml += getSelectedIndicatorsStr(elem);
         }
 
     }

@@ -2,17 +2,25 @@
 
 <head>
     <title>Animator 2D</title>
-    <script src= "./node_modules/agraph/AGraph.js"> </script>
-    <script src= "./model/m_model.js"> </script>
-    <script src= "./view/v_rendering_agraph.js"> </script>
-    <script src= "./controller/c_creating_rectangle.js"> </script>
-    <script src= "./controller/c_creating_circle.js"> </script>
-    <script src= "./controller/c_main.js"> </script>
+    <script src= "./node_modules/agraph/AGraph.js"></script>
+    <script src= "./model/m_model.js"></script>
+    <script src= "./view/v_rendering_agraph.js"></script>
+    <script src= "./controller/c_creating_rectangle.js"></script>
+    <script src= "./controller/c_creating_circle.js"></script>
+    <script src= "./controller/c_main.js"></script>
     <script>
-        function notify(evt){alert(evt.target.id);
-            let id = parseInt(evt.target.id);
-            let ent = MD.g.getEntity(id);
+        function notify(evt) {
+            //alert(evt.target.id);
+            var id = parseInt(evt.target.id);
+            var ent = MD.g.getEntity(id);
             console.log(ent);
+            if(ent.selected) {
+                ent["selected"] = false;
+            }
+            else {
+                ent["selected"] = true;
+            }
+            document.getElementById("output").innerHTML = render(MD.g, 900, 900);
         }
     </script>
 </head>
