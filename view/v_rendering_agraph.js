@@ -12,6 +12,18 @@
     }
     return str;
 }
+function getSelectedIndicatorsStr(obj) {
+    let answer = "";
+    for(ii = 0; ii < 3; ii ++) {
+        for(jj = 0; jj < 3; jj ++) {
+            if(ii == 1 && jj == 1) {continue;}
+            else {
+                answer += '<' + getSelectedSmallRectangleStr(obj, ii, jj) + '/>';
+            }
+        }
+    }
+    return answer;
+}
 function getSelectedSmallRectangleStr(obj, ii, jj) {
     let str = "rect" + " ";
     if (obj.tag == "circle") {
@@ -26,18 +38,6 @@ function getSelectedSmallRectangleStr(obj, ii, jj) {
     }
     return str;
 }
-function getSelectedIndicatorsStr(obj) {
-    let answer = "";
-    for(ii = 0; ii < 3; ii ++) {
-        for(jj = 0; jj < 3; jj ++) {
-            if(ii == 1 && jj == 1) {continue;}
-            else {
-                answer += '<' + getSelectedSmallRectangleStr(obj, ii, jj) + '/>';
-            }
-        }
-    }
-    return answer;
-}
 /*
 function render(svg_attr, g) {
     let innerhtml = '<'+ getTagAndAttributeStr(svg_attr)+'>';   // open a svg tag and its attribute 
@@ -50,7 +50,8 @@ function render(svg_attr, g) {
 }
 */
 function render(g, width, height) {
-    let innerhtml = '<svg width="'+width + '" height="' + height +'" onmousedown="svg_onmousedown()">';
+    let e; //dummy e
+    let innerhtml = '<svg width="'+width + '" height="' + height +'" onmousedown="c_mouseDown(event)" onmouseup="c_mouseUp(event)" onmousemove="c_mouseMove(event)" onclick="c_onClick(event)">';
     for( let id in g.VE) {
         let elem = g.getEntity(id);
         innerhtml += '<' + getTagAndAttributeStr(elem) + '/>';

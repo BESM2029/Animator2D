@@ -7,6 +7,8 @@
     <script src= "./view/v_rendering_agraph.js"></script>
     <script src= "./controller/c_creating_rectangle.js"></script>
     <script src= "./controller/c_creating_circle.js"></script>
+    <script src= "./controller/c_handling_selected.js"></script>
+    <script src= "./controller/c_handling_mouse_events.js"></script>
     <script src= "./controller/c_main.js"></script>
     <script>
         function notify(evt) {
@@ -26,9 +28,11 @@
 </head>
 
 <body>
-    <button onclick="switching_rectangle()">rectangle</button>
-    <button onclick="switching_circle()">circle</button>
-    <button onclick="switching_select()">select</button>
+    <button onclick="switching_rectangle()">Rectangle</button>
+    <button onclick="switching_circle()">Circle</button>
+    <button onclick="switching_select()">Select</button>
+    <button onclick="grouping()">Group</button>
+    <button onclick="ungrouping()">UnGroup</button>
     <div id="status"></div>
     <div id="output"></div>
     <script type="text/javascript">
