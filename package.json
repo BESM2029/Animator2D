@@ -1,7 +1,7 @@
 {
   "name": "animator2d",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.1.0",
+  "description": "using new version of Agraph",
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "agraph": "^1.0.1"
+    "agraph": "^2.1.3"
   }
 }

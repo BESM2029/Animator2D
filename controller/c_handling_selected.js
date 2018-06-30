@@ -11,37 +11,23 @@ function getCornerXYs(obj) {
         answer = {x_min: x_min, x_max: x_max, y_min: y_min, y_max: y_max};
     }
     return answer;
-}
-function convertEntities(IDs) {
-    let selectedEntities = [];
-    for(let ii in IDs) {
-        let id = IDs[ii];
-        let entity = MD.g.getEntity(id);
-        selectedEntities.push(entity);
-    }
-    return selectedEntities;
-}
+} 
 function getAllObjects() {
-    let allObjIds = MD.g.getVtxs();
-    let selectedEntities = convertEntities(allObjIds);
-    return selectedEntities;
+    return MD.g.getVtxs();  
 }
 function getAllRootObjects() {
-    let allRootObjIds = MD.g.getVtxs(function(Vtx){
-        let idKeyStr = MD.g.S_id;
-        let parentIDs = MD.g.inV(Vtx[idKeyStr], function(edge){return edge && edge.type && edge.type == "groupping";});
-        return parentIDs.length == 0;
-    });
-    let allRootEntities = convertEntities(allRootObjIds);
-    return allRootEntities;
+    let allRootObjs = MD.g.getVtxs(function(Vtx){
+        let parents = MD.g.getIncomingEdgeSources(Vtx, function(edge){return edge && edge.type && edge.type == "groupping";});
+        return parents.length == 0;
+    }); 
+    return allRootObjs;
 }
 function getSelectedObjects() {
-    let selectedObjIds = MD.g.getVtxs(function(entity){
+    let selectedObjs = MD.g.getVtxs(function(entity){
         if(entity.selected) return true;
         else return false;
-    });
-    let selectedEntities = convertEntities(selectedObjIds);
-    return selectedEntities;
+    }); 
+    return selectedObjs;
 }
 function groupSelectedObjects() {
     //Step1. Get all selected objects.
@@ -61,10 +47,9 @@ function groupSelectedObjects() {
     //Step3. Insert a node, make it parent of all selected objects.
     let group = MD.g.addVtx(MD.g.curr_id++, {tag:"rect", group:true, x:tx_min, y:ty_min, width: width, height: height, selected: true,
                                             "fill-opacity": 0}); //, onclick: "top.notify(evt)"
-    let idKeyStr = MD.g.S_id;
     for (let ii in selectedEntities) {
         let ent = selectedEntities[ii];
-        MD.g.addEdge(MD.g.curr_id++, group[idKeyStr], ent[idKeyStr], {type:"groupping"});
+        MD.g.addEdge(MD.g.curr_id++, group, ent, {type:"groupping"});
     }
 }
 function unSelectObjects() {
@@ -92,12 +77,10 @@ function translateObject(ent, delta_x, delta_y) {
         ent.cx += delta_x;
         ent.cy += delta_y;
     }
-    if(ent.group) {
-        let idKeyStr = MD.g.S_id;
-        let childIDs = MD.g.outV(ent[idKeyStr], function(edge){return edge && edge.type && edge.type == "groupping";})
-        for(let ii in childIDs) {
-            let id = childIDs[ii];
-            let child = MD.g.getEntity(id);
+    if(ent.group) { 
+        let children = MD.g.getOutgoingEdgeDestinations(ent, function(edge){return edge && edge.type && edge.type == "groupping";})
+        for(let ii in children) { 
+            let child = children[ii]
             translateObject(child, delta_x, delta_y);
         }
     }
@@ -116,15 +99,13 @@ function unGroupSelectedObjects() {
     //Step2. For each selected object if it is a group, get all children selected, and remove the group.
     for (let ii in selectedEntities) {
         let ent = selectedEntities[ii];
-        if(ent.group) {
-            let idKeyStr = MD.g.S_id;
-            let childIDs = MD.g.outV(ent[idKeyStr], function(edge){return edge && edge.type && edge.type == "groupping";})
-            for(let ii in childIDs) {
-                let id = childIDs[ii];
-                let child = MD.g.getEntity(id);
+        if(ent.group) { 
+            let children = MD.g.getOutgoingEdgeDestinations(ent, function(edge){return edge && edge.type && edge.type == "groupping";})
+            for(let ii in children) {
+                let child = children[ii]; 
                 child["selected"] = true;
             }
-            MD.g.removeEntity(ent[idKeyStr], true);
+            MD.g.removeEntity(ent, true);
         }
     }
 }
