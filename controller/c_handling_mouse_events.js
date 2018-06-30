@@ -17,6 +17,10 @@ function c_mouseDown(e) {
         circle_maker.onmousedown(e);
         document.getElementById("output").innerHTML = render(MD.g, 900, 900);
     }
+    else if(status == "line") {
+        line_maker.onmousedown(e);
+        document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+    }
     else if(status == "select") {
         let xy = convert_xyToElementRegion(e, "output");
         x_down = xy.x;
@@ -35,7 +39,11 @@ function c_mouseMove(e) {
     //document.getElementById("demo_mousemove").innerHTML = coor;
 }
 function c_mouseUp(e) {
-    if(status == "select") {
+    if (status == "line") {
+        line_maker.onmouseup(e);
+        document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+    }
+    else if(status == "select") {
         let xy = convert_xyToElementRegion(e, "output");
         //let coor = "Mouse up: (" + x + "," + y + ")";
         //document.getElementById("demo_mouseup").innerHTML = coor;
@@ -61,7 +69,8 @@ function c_mouseOut() {
 function c_onClick(evt) {
     if(status == "select") {
         //alert(evt.target.id);
-        let allObjects = getAllObjects();
+        let emptySpaceClicked = true;
+        let allObjects = getAllRootObjects();
         for(let ii in allObjects) {
             //console.log(ent);
             let ent = allObjects[ii];
@@ -73,7 +82,11 @@ function c_onClick(evt) {
                 else {
                     ent["selected"] = true;
                 }
+                emptySpaceClicked = false;
             }
+        }
+        if(emptySpaceClicked) {
+            unSelectAllObjects();
         }
         document.getElementById("output").innerHTML = render(MD.g, 900, 900);
     }
@@ -83,6 +96,6 @@ function isClicked(ent, x, y) {
         return (x-ent.cx)*(x-ent.cx) + (y-ent.cy)*(y-ent.cy) < ent.r*ent.r;
     }
     else if(ent.tag == "rect") {
-        return ent.x < x && x <ent.x +ent.width && ent.y < y && y <ent.y +ent.height;
+        return ent.x < x && x < ent.x + ent.width && ent.y < y && y < ent.y + ent.height;
     }
 }

@@ -26,6 +26,15 @@ function getAllObjects() {
     let selectedEntities = convertEntities(allObjIds);
     return selectedEntities;
 }
+function getAllRootObjects() {
+    let allRootObjIds = MD.g.getVtxs(function(Vtx){
+        let idKeyStr = MD.g.S_id;
+        let parentIDs = MD.g.inV(Vtx[idKeyStr], function(edge){return edge && edge.type && edge.type == "groupping";});
+        return parentIDs.length == 0;
+    });
+    let allRootEntities = convertEntities(allRootObjIds);
+    return allRootEntities;
+}
 function getSelectedObjects() {
     let selectedObjIds = MD.g.getVtxs(function(entity){
         if(entity.selected) return true;
@@ -50,8 +59,13 @@ function groupSelectedObjects() {
     let width = tx_max - tx_min;
     let height = ty_max - ty_min;
     //Step3. Insert a node, make it parent of all selected objects.
-    MD.g.addVtx(MD.g.curr_id++, {tag:"rect", x:tx_min, y:ty_min, width: width, height: height, selected: true,
-    "fill-opacity": 0}); //, onclick: "top.notify(evt)"
+    let group = MD.g.addVtx(MD.g.curr_id++, {tag:"rect", group:true, x:tx_min, y:ty_min, width: width, height: height, selected: true,
+                                            "fill-opacity": 0}); //, onclick: "top.notify(evt)"
+    let idKeyStr = MD.g.S_id;
+    for (let ii in selectedEntities) {
+        let ent = selectedEntities[ii];
+        MD.g.addEdge(MD.g.curr_id++, group[idKeyStr], ent[idKeyStr], {type:"groupping"});
+    }
 }
 function unSelectObjects() {
     let selectedEntities = getSelectedObjects();
@@ -61,19 +75,56 @@ function unSelectObjects() {
         ent.selected = false;
     }
 }
+function unSelectAllObjects() {
+    let allObjects = getAllObjects();
+    for(let ii in allObjects) {
+        //console.log(ent);
+        let ent = allObjects[ii];
+        ent["selected"] = false;
+    }
+}
+function translateObject(ent, delta_x, delta_y) {
+    if(ent.tag == "rect") {
+        ent.x += delta_x;
+        ent.y += delta_y;
+    }
+    else if(ent.tag == "circle") {
+        ent.cx += delta_x;
+        ent.cy += delta_y;
+    }
+    if(ent.group) {
+        let idKeyStr = MD.g.S_id;
+        let childIDs = MD.g.outV(ent[idKeyStr], function(edge){return edge && edge.type && edge.type == "groupping";})
+        for(let ii in childIDs) {
+            let id = childIDs[ii];
+            let child = MD.g.getEntity(id);
+            translateObject(child, delta_x, delta_y);
+        }
+    }
+}
 function translateSelectedObjects(delta_x, delta_y) {
     let selectedEntities = getSelectedObjects();
     //Unselect object.
     for (let ii in selectedEntities) {
         let ent = selectedEntities[ii];
-        if(ent.tag == "rect") {
-            ent.x += delta_x;
-            ent.y += delta_y;
-        }
-        else if(ent.tag == "circle") {
-            ent.cx += delta_x;
-            ent.cy += delta_y;
+        translateObject(ent, delta_x, delta_y);
+    }
+}
+function unGroupSelectedObjects() {
+    //Step1. Get all selected objects.
+    let selectedEntities = getSelectedObjects();
+    //Step2. For each selected object if it is a group, get all children selected, and remove the group.
+    for (let ii in selectedEntities) {
+        let ent = selectedEntities[ii];
+        if(ent.group) {
+            let idKeyStr = MD.g.S_id;
+            let childIDs = MD.g.outV(ent[idKeyStr], function(edge){return edge && edge.type && edge.type == "groupping";})
+            for(let ii in childIDs) {
+                let id = childIDs[ii];
+                let child = MD.g.getEntity(id);
+                child["selected"] = true;
+            }
+            MD.g.removeEntity(ent[idKeyStr], true);
         }
     }
-
 }
