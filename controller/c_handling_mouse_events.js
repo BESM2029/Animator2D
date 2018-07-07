@@ -30,10 +30,12 @@ function c_mouseDown(e) {
     }
 }
 function c_mouseMove(e) {
-    let x = e.clientX;
-    let y = e.clientY;
-    if(e.buttons == 1) {
-        draged = true;
+    let xy = convert_xyToElementRegion(e, "output");
+    if(e.buttons == 1 && x_down && y_down) {
+        if (Math.abs(xy.x-x_down)>2||Math.abs(xy.y-y_down)>2) {
+            //console.log("button down");
+            draged = true;
+        }
     }
     //let coor = "Coordinates: (" + x + "," + y + ")";
     //document.getElementById("demo_mousemove").innerHTML = coor;
@@ -97,5 +99,12 @@ function isClicked(ent, x, y) {
     }
     else if(ent.tag == "rect") {
         return ent.x < x && x < ent.x + ent.width && ent.y < y && y < ent.y + ent.height;
+    }
+    else if (ent.tag == "line") {
+        let x_min = Math.min(ent.x1, ent.x2);
+        let x_max = Math.max(ent.x1, ent.x2);
+        let y_min = Math.min(ent.y1, ent.y2);
+        let y_max = Math.max(ent.y1, ent.y2);
+        return x_min < x && x < x_max && y_min < y && y <= y_max;
     }
 }

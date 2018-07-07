@@ -1,13 +1,18 @@
 function getCornerXYs(obj) {
     let answer = {};
-    if (obj.tag == "circle") {
+    if (obj.tag == "rect") {
+        let x_min = obj.x; let x_max = obj.x + obj.width;
+        let y_min = obj.y; let y_max = obj.y + obj.height;
+        answer = {x_min: x_min, x_max: x_max, y_min: y_min, y_max: y_max};
+    }
+    else if (obj.tag == "circle") {
         let x_min = obj.cx - obj.r; let x_max = obj.cx + obj.r;
         let y_min = obj.cy - obj.r; let y_max = obj.cy + obj.r;
         answer = {x_min: x_min, x_max: x_max, y_min: y_min, y_max: y_max};
     }
-    else if (obj.tag == "rect") {
-        let x_min = obj.x; let x_max = obj.x + obj.width;
-        let y_min = obj.y; let y_max = obj.y + obj.height;
+    else if (obj.tag == "line") {
+        let x_min = obj.x1; let x_max = obj.x2;
+        let y_min = obj.y1; let y_max = obj.y2;
         answer = {x_min: x_min, x_max: x_max, y_min: y_min, y_max: y_max};
     }
     return answer;
@@ -76,6 +81,12 @@ function translateObject(ent, delta_x, delta_y) {
     else if(ent.tag == "circle") {
         ent.cx += delta_x;
         ent.cy += delta_y;
+    }
+    else if(ent.tag == "line") {
+        ent.x1 += delta_x;
+        ent.y1 += delta_y;
+        ent.x2 += delta_x;
+        ent.y2 += delta_y;
     }
     if(ent.group) { 
         let children = MD.g.getOutgoingEdgeDestinations(ent, function(edge){return edge && edge.type && edge.type == "groupping";})

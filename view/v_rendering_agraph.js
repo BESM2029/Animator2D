@@ -36,6 +36,11 @@ function getSelectedSmallRectangleStr(obj, ii, jj) {
         let index_y = [obj.y - 2, obj.y + (obj.height/2) - 2, obj.y + obj.height - 2];
         str += attrStr("x", index_x[ii]) + attrStr("y", index_y[jj]) + 'width="4" height="4" stroke-width="0" fill="green"';
     }
+    else if (obj.tag == "line") {
+        let index_x = [obj.x1 - 2, (obj.x1+obj.x2)/2 - 2, obj.x2 - 2];
+        let index_y = [obj.y1 - 2, (obj.y1+obj.y2)/2 - 2, obj.y2 - 2];
+        str += attrStr("x", index_x[ii]) + attrStr("y", index_y[jj]) + 'width="4" height="4" stroke-width="0" fill="green"';
+    }
     return str;
 }
 /*
