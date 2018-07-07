@@ -95,16 +95,27 @@ function c_onClick(evt) {
 }
 function isClicked(ent, x, y) {
     if(ent.tag == "circle") {
-        return (x-ent.cx)*(x-ent.cx) + (y-ent.cy)*(y-ent.cy) < ent.r*ent.r;
+        let cx = viewer._zoomFactor*ent.cx+viewer._panFactor.x;
+        let cy = viewer._zoomFactor*ent.cy+viewer._panFactor.y;
+        let r = viewer._zoomFactor*ent.r;
+        return (x-cx)*(x-cx) + (y-cy)*(y-cy) < r*r;
     }
     else if(ent.tag == "rect") {
-        return ent.x < x && x < ent.x + ent.width && ent.y < y && y < ent.y + ent.height;
+        let rx = viewer._zoomFactor*ent.x+viewer._panFactor.x;
+        let ry = viewer._zoomFactor*ent.y+viewer._panFactor.y;
+        let width = viewer._zoomFactor*ent.width;
+        let height = viewer._zoomFactor*ent.height;
+        return rx < x && x < rx + width && ry < y && y < ry + height;
     }
     else if (ent.tag == "line") {
         let x_min = Math.min(ent.x1, ent.x2);
         let x_max = Math.max(ent.x1, ent.x2);
         let y_min = Math.min(ent.y1, ent.y2);
         let y_max = Math.max(ent.y1, ent.y2);
-        return x_min < x && x < x_max && y_min < y && y <= y_max;
+        let tx_min = viewer._zoomFactor*x_min+viewer._panFactor.x;
+        let tx_max = viewer._zoomFactor*x_max+viewer._panFactor.x;
+        let ty_min = viewer._zoomFactor*y_min+viewer._panFactor.y;
+        let ty_max = viewer._zoomFactor*y_max+viewer._panFactor.y;
+        return tx_min < x && x < tx_max && ty_min < y && y <= ty_max;
     }
 }

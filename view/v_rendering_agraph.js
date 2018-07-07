@@ -1,4 +1,19 @@
- function attrStr(keyStr, value) {
+ var viewer = {_zoomFactor:1, _panFactor:{x:0, y:0}};
+
+function zoomIn() {
+    viewer._zoomFactor = viewer._zoomFactor*1.1;
+    document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+}
+function zoomOut() {
+    viewer._zoomFactor = viewer._zoomFactor*0.9;
+    document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+}
+function panning() {
+    viewer._panFactor.x +=10;
+    viewer._panFactor.y +=10;
+    document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+}
+function attrStr(keyStr, value) {
     return keyStr + '="' + value + '" ';
  }
  function getTagAndAttributeStr(obj) {
@@ -56,7 +71,9 @@ function render(svg_attr, g) {
 */
 function render(g, width, height) {
     let e; //dummy e
-    let innerhtml = '<svg width="'+width + '" height="' + height +'" onmousedown="c_mouseDown(event)" onmouseup="c_mouseUp(event)" onmousemove="c_mouseMove(event)" onclick="c_onClick(event)">';
+    let innerhtml = '<svg width="100%" height="100%" onmousedown="c_mouseDown(event)" onmouseup="c_mouseUp(event)" onmousemove="c_mouseMove(event)" onclick="c_onClick(event)">';
+    innerhtml += '<g transform=" translate('+viewer._panFactor.x+' '+viewer._panFactor.y+') scale('+viewer._zoomFactor+' '+viewer._zoomFactor+')">';
+    //let innerhtml = '<svg width="'+width + '" height="' + height +'" onmousedown="c_mouseDown(event)" onmouseup="c_mouseUp(event)" onmousemove="c_mouseMove(event)" onclick="c_onClick(event)">';
     for( let id in g.VE) {
         let elem = g.getEntity(id);
         innerhtml += '<' + getTagAndAttributeStr(elem) + '/>';
@@ -65,6 +82,6 @@ function render(g, width, height) {
         }
 
     }
-    innerhtml += '</svg>';
+    innerhtml += '</g></svg>';
     return innerhtml;
 }
