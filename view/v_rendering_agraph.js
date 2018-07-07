@@ -71,7 +71,7 @@ function render(svg_attr, g) {
 */
 function render(g, width, height) {
     let e; //dummy e
-    let innerhtml = '<svg width="100%" height="100%" onmousedown="c_mouseDown(event)" onmouseup="c_mouseUp(event)" onmousemove="c_mouseMove(event)" onclick="c_onClick(event)">';
+    let innerhtml = '<svg width="100%" height="100%" onmousedown="c_mouseDown(event)" onmouseup="c_mouseUp(event)" onmousemove="c_mouseMove(event)" onwheel="c_onWheel(event)">>';
     innerhtml += '<g transform=" translate('+viewer._panFactor.x+' '+viewer._panFactor.y+') scale('+viewer._zoomFactor+' '+viewer._zoomFactor+')">';
     //let innerhtml = '<svg width="'+width + '" height="' + height +'" onmousedown="c_mouseDown(event)" onmouseup="c_mouseUp(event)" onmousemove="c_mouseMove(event)" onclick="c_onClick(event)">';
     for( let id in g.VE) {

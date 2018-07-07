@@ -8,6 +8,18 @@ function convert_xyToElementRegion(e, elementId) {
     let y = e.clientY - dim.top;
     return {x:x, y:y}
 }
+function c_onWheel(e) {
+    if (e.wheelDeltaY<0){
+        console.log("WheelDown");
+        zoomIn();
+       // downscroll code
+    }
+    else {
+        console.log("WheelUp");
+        zoomOut();
+       // upscroll code
+    }
+}
 function c_mouseDown(e) {
     if(status == "rectangle") {
         rectangle_maker.onmousedown(e);
