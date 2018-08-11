@@ -15,6 +15,13 @@ function getCornerXYs(obj) {
         let y_min = obj.y1; let y_max = obj.y2;
         answer = {x_min: x_min, x_max: x_max, y_min: y_min, y_max: y_max};
     }
+    else if (obj.tag == "polyline") {
+        let x_min = Math.min.apply(null, obj.point);
+        let x_max = Math.max.apply(null, obj.point);
+        let y_min = Math.min.apply(null, obj.point);
+        let y_max = Math.max.apply(null, obj.point);
+        answer = {x_min: x_min, x_max: x_max, y_min: y_min, y_max: y_max};
+    }
     return answer;
 } 
 function getAllObjects() {

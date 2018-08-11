@@ -19,27 +19,39 @@ function c_onWheel(e) {
         zoomOut();
        // upscroll code
     }
+    e.stopPropagation();
 }
 function c_mouseDown(e) {
+    console.log("Mouse Down is called!");
     if(status == "rectangle") {
         rectangle_maker.onmousedown(e);
-        document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+        redraw(MD.g);
     }
     else if(status == "circle") {
         circle_maker.onmousedown(e);
-        document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+        redraw(MD.g);
     }
     else if(status == "line") {
         line_maker.onmousedown(e);
-        document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+        redraw(MD.g);
+    }
+    else if(status == "polyline") {
+        polyline_maker.onmousedown(e);
+        redraw(MD.g);
+    }
+    else if(status == "text") {
+        let txt = document.getElementById("txt").innerHTML
+        text_maker.onmousedown(e, txt);
+        redraw(MD.g);
     }
     else if(status == "select") {
         let xy = convert_xyToElementRegion(e, "output");
         x_down = xy.x;
         y_down = xy.y;
         //unSelectObjects();
-        //document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+        //redraw(MD.g);
     }
+    e.stopPropagation();
 }
 function c_mouseMove(e) {
     let xy = convert_xyToElementRegion(e, "output");
@@ -49,13 +61,19 @@ function c_mouseMove(e) {
             draged = true;
         }
     }
+    if(status =="polyline") {
+        polyline_maker.onmousemove(e);
+        redraw(MD.g);
+    }
     //let coor = "Coordinates: (" + x + "," + y + ")";
     //document.getElementById("demo_mousemove").innerHTML = coor;
+    e.stopPropagation();
 }
 function c_mouseUp(e) {
+    console.log("Mouse Up is called!")
     if (status == "line") {
         line_maker.onmouseup(e);
-        document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+        redraw(MD.g);
     }
     else if(status == "select") {
         let xy = convert_xyToElementRegion(e, "output");
@@ -67,43 +85,60 @@ function c_mouseUp(e) {
             //let coor_delta = "Mouse delta: (" + x_delta + "," + y_delta + ")";
             //document.getElementById("demo_mousedelta").innerHTML = coor_delta;
             translateSelectedObjects(x_delta, y_delta);
-            document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+            redraw(MD.g);
         }
-        else {
+        /*else {
             c_onClick(e);
-        }
+        }*/
     }
     x_down = null;
     y_down = null;
     draged = false;
+    e.stopPropagation();
 }
 function c_mouseOut() {
     //document.getElementById("demo_mousemove").innerHTML = "Coordinates:";
+    e.stopPropagation();
 }
-function c_onClick(evt) {
-    if(status == "select") {
-        //alert(evt.target.id);
-        let emptySpaceClicked = true;
-        let allObjects = getAllRootObjects();
-        for(let ii in allObjects) {
-            //console.log(ent);
-            let ent = allObjects[ii];
-            let xy = convert_xyToElementRegion(evt, "output");
-            if (isClicked(ent, xy.x, xy.y)) {
-                if(ent.selected) {
-                    ent["selected"] = false;
-                }
-                else {
-                    ent["selected"] = true;
-                }
-                emptySpaceClicked = false;
-            }
-        }
-        if(emptySpaceClicked) {
-            unSelectAllObjects();
-        }
-        document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+function c_onDblClick(e) {
+    console.log("Double Click is called!");
+    if(status == "polyline") {
+        polyline_maker.ondblclick(e);
+        redraw(MD.g);
     }
+    e.stopPropagation();
+}
+function c_onClick(e) {
+    console.log("Click is called!");
+    if(status == "select") {
+        if (x_down != null && draged) {
+            return
+        }
+        else {
+            //alert(e.target.id);
+            let emptySpaceClicked = true;
+            let allObjects = getAllRootObjects();
+            for(let ii in allObjects) {
+                //console.log(ent);
+                let ent = allObjects[ii];
+                let xy = convert_xyToElementRegion(e, "output");
+                if (isClicked(ent, xy.x, xy.y)) {
+                    if(ent.selected) {
+                        ent["selected"] = false;
+                    }
+                    else {
+                        ent["selected"] = true;
+                    }
+                    emptySpaceClicked = false;
+                }
+            }
+            if(emptySpaceClicked) {
+                unSelectAllObjects();
+            }
+            redraw(MD.g);
+        }
+    }
+    e.stopPropagation();
 }
 function isClicked(ent, x, y) {
     if(ent.tag == "circle") {
@@ -124,6 +159,17 @@ function isClicked(ent, x, y) {
         let x_max = Math.max(ent.x1, ent.x2);
         let y_min = Math.min(ent.y1, ent.y2);
         let y_max = Math.max(ent.y1, ent.y2);
+        let tx_min = viewer._zoomFactor*x_min+viewer._panFactor.x;
+        let tx_max = viewer._zoomFactor*x_max+viewer._panFactor.x;
+        let ty_min = viewer._zoomFactor*y_min+viewer._panFactor.y;
+        let ty_max = viewer._zoomFactor*y_max+viewer._panFactor.y;
+        return tx_min < x && x < tx_max && ty_min < y && y <= ty_max;
+    }
+    else if (ent.tag == "polyline") {
+        let x_min = Math.min.apply(null, ent.point);
+        let x_max = Math.max.apply(null, ent.point);
+        let y_min = Math.min.apply(null, ent.point);
+        let y_max = Math.max.apply(null, ent.point);
         let tx_min = viewer._zoomFactor*x_min+viewer._panFactor.x;
         let tx_max = viewer._zoomFactor*x_max+viewer._panFactor.x;
         let ty_min = viewer._zoomFactor*y_min+viewer._panFactor.y;

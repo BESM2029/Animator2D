@@ -2,12 +2,15 @@
 
 <head>
     <title>Animator 2D</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src= "./node_modules/agraph/AGraph.js"></script>
     <script src= "./model/m_model.js"></script>
     <script src= "./view/v_rendering_agraph.js"></script>
     <script src= "./controller/c_creating_rectangle.js"></script>
     <script src= "./controller/c_creating_circle.js"></script>
     <script src= "./controller/c_creating_line.js"></script>
+    <script src= "./controller/c_creating_polyline.js"></script>
+    <script src= "./controller/c_creating_text.js"></script>
     <script src= "./controller/c_handling_selected.js"></script>
     <script src= "./controller/c_handling_mouse_events.js"></script>
     <script src= "./controller/c_main.js"></script>
@@ -23,7 +26,7 @@
             else {
                 ent["selected"] = true;
             }
-            document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+            redraw(MD.g);
         }
     </script>
 </head>
@@ -32,6 +35,9 @@
     <button onclick="switching_rectangle()">Rectangle</button>
     <button onclick="switching_circle()">Circle</button>
     <button onclick="switching_line()">Line</button>
+    <button onclick="switching_polyline()">Polyline</button>
+    <button onclick="switching_text()">Text</button>
+    <input type="text" id="txt"><br>
     <button onclick="switching_select()">Select</button>
     <button onclick="grouping()">Group</button>
     <button onclick="ungrouping()">UnGroup</button>
@@ -43,7 +49,7 @@
     <script type="text/javascript">
         //document.getElementById("output").innerHTML = JSON.stringify(MD.g);
         //let svg_attr={tag:"svg", width:700, height:500, onmousedown:"svg_onmousedown()"};
-        document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+        renderAll(MD.g);
         display_status();
     </script>
 </body>

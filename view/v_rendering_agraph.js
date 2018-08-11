@@ -2,30 +2,16 @@
 
 function zoomIn() {
     viewer._zoomFactor = viewer._zoomFactor*1.1;
-    document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+    redraw(MD.g);
 }
 function zoomOut() {
     viewer._zoomFactor = viewer._zoomFactor*0.9;
-    document.getElementById("output").innerHTML = render(MD.g, 900, 900);
+    redraw(MD.g);
 }
 function panning() {
     viewer._panFactor.x +=10;
     viewer._panFactor.y +=10;
-    document.getElementById("output").innerHTML = render(MD.g, 900, 900);
-}
-function attrStr(keyStr, value) {
-    return keyStr + '="' + value + '" ';
- }
- function getTagAndAttributeStr(obj) {
-    let str = obj.tag + " ";
-    for(let key in obj) {
-        if (key == "tag")
-            continue;
-        else
-            //str += key + '="'+obj[key] + '" ' ;
-            str += attrStr(key, obj[key]);
-    }
-    return str;
+    redraw(MD.g);
 }
 function getSelectedIndicatorsStr(obj) {
     let answer = "";
@@ -58,30 +44,56 @@ function getSelectedSmallRectangleStr(obj, ii, jj) {
     }
     return str;
 }
-/*
-function render(svg_attr, g) {
-    let innerhtml = '<'+ getTagAndAttributeStr(svg_attr)+'>';   // open a svg tag and its attribute 
-    for( let id in g.VE) {
-        let elem = g.getEntity(id);
-        innerhtml += '<' + getTagAndAttributeStr(elem) + '/>'  
-    }
-    innerhtml += '</svg>';                                      // close the svg tag
-    return innerhtml;
+function erase() {
+    $( "svg" ).find( "g" ).remove();
 }
-*/
-function render(g, width, height) {
-    let e; //dummy e
-    let innerhtml = '<svg width="100%" height="100%" onmousedown="c_mouseDown(event)" onmouseup="c_mouseUp(event)" onmousemove="c_mouseMove(event)" onwheel="c_onWheel(event)">>';
-    innerhtml += '<g transform=" translate('+viewer._panFactor.x+' '+viewer._panFactor.y+') scale('+viewer._zoomFactor+' '+viewer._zoomFactor+')">';
+function attrStr(keyStr, value) {
+    return keyStr + '="' + value + '" ';
+ }
+ function getTagAndAttributeStr(obj) {
+    let str = obj.tag + " ";
+    for(let key in obj) {
+        if (key == "tag" || key == "__text")
+            continue;
+        else
+            //str += key + '="'+obj[key] + '" ' ;
+            str += attrStr(key, obj[key]);
+    }
+    return str;
+}
+function render(g) {
+    let innerhtml = '<g transform=" translate('+viewer._panFactor.x+' '+viewer._panFactor.y+') scale('+viewer._zoomFactor+' '+viewer._zoomFactor+')">';
     //let innerhtml = '<svg width="'+width + '" height="' + height +'" onmousedown="c_mouseDown(event)" onmouseup="c_mouseUp(event)" onmousemove="c_mouseMove(event)" onclick="c_onClick(event)">';
     for( let id in g.VE) {
         let elem = g.getEntity(id);
-        innerhtml += '<' + getTagAndAttributeStr(elem) + '/>';
+        if (elem.tag == "text") {
+            innerhtml += '<' + getTagAndAttributeStr(elem) + '>' + elem.__text + '</text>';
+        }
+        else {
+            innerhtml += '<' + getTagAndAttributeStr(elem) + '/>';
+        }
         if(elem.selected == true) {
             innerhtml += getSelectedIndicatorsStr(elem);
         }
-
     }
-    innerhtml += '</g></svg>';
+    innerhtml += '</g>';
     return innerhtml;
+}
+function redraw(g) {
+    //erase();
+    //$( "svg" ).append(render(g));
+    let e; //dummy e
+    let innerhtml = '<svg width="100%" height="100%" onmousedown="c_mouseDown(event)" onmouseup="c_mouseUp(event)" ';
+    innerhtml += 'onmousemove="c_mouseMove(event)" onwheel="c_onWheel(event)" onclick="c_onClick(event)" ondblclick="c_onDblClick(event)">>';
+    innerhtml += render(g);
+    innerhtml += '</svg>';
+    $( "#output" ).html(innerhtml);
+}
+function renderAll(g) {
+    let e; //dummy e
+    let innerhtml = '<svg width="100%" height="100%" onmousedown="c_mouseDown(event)" onmouseup="c_mouseUp(event)" ';
+    innerhtml += 'onmousemove="c_mouseMove(event)" onwheel="c_onWheel(event)" onclick="c_onClick(event)" ondblclick="c_onDblClick(event)">>';
+    innerhtml += '</svg>';
+    $( "#output" ).append(innerhtml);
+    //redraw(g);
 }
