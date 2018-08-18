@@ -42,6 +42,12 @@ function getSelectedSmallRectangleStr(obj, ii, jj) {
         let index_y = [obj.y1 - 2, (obj.y1+obj.y2)/2 - 2, obj.y2 - 2];
         str += attrStr("x", index_x[ii]) + attrStr("y", index_y[jj]) + 'width="4" height="4" stroke-width="0" fill="green"';
     }
+    else if (obj.tag == "polyline") {
+        let mnx = polylineMinMax(obj);
+        let index_x = [mnx.x_min - 2, (mnx.x_min+mnx.x_max)/2 - 2, mnx.x_max - 2];
+        let index_y = [mnx.y_min - 2, (mnx.y_min+mnx.y_max)/2 - 2, mnx.y_max - 2];
+        str += attrStr("x", index_x[ii]) + attrStr("y", index_y[jj]) + 'width="4" height="4" stroke-width="0" fill="green"';
+    }
     return str;
 }
 function erase() {

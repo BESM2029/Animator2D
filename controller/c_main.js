@@ -24,6 +24,9 @@ function switching_polyline() {
     status = "polyline";
     display_status();
 }
+function polylineDrawEnd() {
+    polyline_maker.emptyStack();
+}
 function switching_text() {
     status = "text";
     display_status();
@@ -31,7 +34,6 @@ function switching_text() {
 function switching_select() {
     status = "select";
     display_status();
-    polyline_maker.emptyStack();
 }
 function grouping() {
     status = "select";

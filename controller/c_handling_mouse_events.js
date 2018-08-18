@@ -61,7 +61,11 @@ function c_mouseMove(e) {
             draged = true;
         }
     }
-    if(status =="polyline") {
+    /*else if(status =="line") {
+        line_maker.onmousemove(e);
+        redraw(MD.g);
+    }*/
+    else if(status =="polyline") {
         polyline_maker.onmousemove(e);
         redraw(MD.g);
     }
@@ -166,14 +170,28 @@ function isClicked(ent, x, y) {
         return tx_min < x && x < tx_max && ty_min < y && y <= ty_max;
     }
     else if (ent.tag == "polyline") {
-        let x_min = Math.min.apply(null, ent.point);
-        let x_max = Math.max.apply(null, ent.point);
-        let y_min = Math.min.apply(null, ent.point);
-        let y_max = Math.max.apply(null, ent.point);
-        let tx_min = viewer._zoomFactor*x_min+viewer._panFactor.x;
-        let tx_max = viewer._zoomFactor*x_max+viewer._panFactor.x;
-        let ty_min = viewer._zoomFactor*y_min+viewer._panFactor.y;
-        let ty_max = viewer._zoomFactor*y_max+viewer._panFactor.y;
+        let mnx = polylineMinMax(ent);
+        let tx_min = viewer._zoomFactor*mnx.x_min+viewer._panFactor.x;
+        let tx_max = viewer._zoomFactor*mnx.x_max+viewer._panFactor.x;
+        let ty_min = viewer._zoomFactor*mnx.y_min+viewer._panFactor.y;
+        let ty_max = viewer._zoomFactor*mnx.y_max+viewer._panFactor.y;
         return tx_min < x && x < tx_max && ty_min < y && y <= ty_max;
     }
+}
+function polylineMinMax(ent) {
+    let poins_x = [];
+    let poins_y = [];
+    let points_str = ent.points;
+    let points_trim = points_str.trim();
+    let points_obj = points_trim.split(" ");
+    for (let ii in points_obj) {
+        let points_xy = points_obj[ii].split(",");
+        poins_x.push(points_xy[0]);
+        poins_y.push(points_xy[1]);
+    }
+    let x_min = Math.min.apply(null, poins_x);
+    let x_max = Math.max.apply(null, poins_x);
+    let y_min = Math.min.apply(null, poins_y);
+    let y_max = Math.max.apply(null, poins_y);
+    return minmax = {x_min:x_min, x_max:x_max, y_min:y_min, y_max:y_max}
 }

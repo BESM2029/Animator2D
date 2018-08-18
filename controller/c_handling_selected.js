@@ -16,11 +16,8 @@ function getCornerXYs(obj) {
         answer = {x_min: x_min, x_max: x_max, y_min: y_min, y_max: y_max};
     }
     else if (obj.tag == "polyline") {
-        let x_min = Math.min.apply(null, obj.point);
-        let x_max = Math.max.apply(null, obj.point);
-        let y_min = Math.min.apply(null, obj.point);
-        let y_max = Math.max.apply(null, obj.point);
-        answer = {x_min: x_min, x_max: x_max, y_min: y_min, y_max: y_max};
+        let mnx = polylineMinMax(obj);
+        answer = {x_min:mnx.x_min, x_max:mnx.x_max, y_min:mnx.y_min, y_max:mnx.y_max};
     }
     return answer;
 } 
@@ -94,6 +91,31 @@ function translateObject(ent, delta_x, delta_y) {
         ent.y1 += delta_y;
         ent.x2 += delta_x;
         ent.y2 += delta_y;
+    }
+    else if(ent.tag == "polyline") {
+        let points_x = [];
+        let points_y = [];
+        let points_x_moved = [];
+        let points_y_moved = [];
+        let points_moved ="";
+        let points_str = ent.points;
+        let points_trim = points_str.trim();
+        let points_obj = points_trim.split(" ");
+        for (let ii in points_obj) {
+            let points_xy = points_obj[ii].split(",");
+            points_x.push(points_xy[0]);
+            points_y.push(points_xy[1]);
+        }
+        for (let ii in points_x) {
+            points_x_moved.push(parseFloat(points_x[ii]) + delta_x)
+        }
+        for (let ii in points_y) {
+            points_y_moved.push(parseFloat(points_y[ii]) + delta_y)
+        }
+        for (let ii in points_obj) {
+            points_moved += points_x_moved[ii]+","+points_y_moved[ii]+" ";
+        }
+        ent.points = points_moved;
     }
     if(ent.group) { 
         let children = MD.g.getOutgoingEdgeDestinations(ent, function(edge){return edge && edge.type && edge.type == "groupping";})
