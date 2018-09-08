@@ -41,7 +41,8 @@ function c_mouseDown(e) {
     }
     else if(status == "text") {
         let txt = document.getElementById("txt").innerHTML
-        text_maker.onmousedown(e, txt);
+        console.log(txt);
+        text_maker.onmousedown(txt, e);
         redraw(MD.g);
     }
     else if(status == "select") {
@@ -51,7 +52,7 @@ function c_mouseDown(e) {
         //unSelectObjects();
         //redraw(MD.g);
     }
-    e.stopPropagation();
+    //e.stopPropagation();
 }
 function c_mouseMove(e) {
     let xy = convert_xyToElementRegion(e, "output");
@@ -71,7 +72,7 @@ function c_mouseMove(e) {
     }
     //let coor = "Coordinates: (" + x + "," + y + ")";
     //document.getElementById("demo_mousemove").innerHTML = coor;
-    e.stopPropagation();
+    //e.stopPropagation();
 }
 function c_mouseUp(e) {
     console.log("Mouse Up is called!")
@@ -98,7 +99,7 @@ function c_mouseUp(e) {
     x_down = null;
     y_down = null;
     draged = false;
-    e.stopPropagation();
+    //e.stopPropagation();
 }
 function c_mouseOut() {
     //document.getElementById("demo_mousemove").innerHTML = "Coordinates:";

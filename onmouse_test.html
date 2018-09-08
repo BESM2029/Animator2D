@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+div {
+    width: 400px;
+    height: 400px;
+    border: 1px solid black;
+}
+</style>
+</head>
+<body>
+
+<div onmousemove="mouseMove(event)" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)" onmouseout="mouseOut()"></div>
+
+<p>Mouse over the rectangle above, and get the coordinates of your mouse pointer.</p>
+
+<p>When the mouse is moved over the div, the p element will display the horizontal and vertical coordinates of your mouse pointer, whose values are returned from the clientX and clientY properties on the 
+MouseEvent object.</p>
+
+<p id="demo_mousemove">Coordinates:</p>
+<p id="demo_mousedown">Mouse down:</p>
+<p id="demo_mouseup">Mouse up:</p>
+<p id="demo_mousedelta">Mouse delta:</p>
+
+<script>
+    var x_down = null;
+    var y_down = null;
+    function mouseMove(e) {
+        let x = e.clientX;
+        let y = e.clientY;
+        console.log(e.buttons);
+        let coor = "Coordinates: (" + x + "," + y + ")";
+        document.getElementById("demo_mousemove").innerHTML = coor;
+    }
+    function mouseDown(e) {
+        let x = e.clientX;
+        let y = e.clientY;
+        let coor = "Mouse down: (" + x + "," + y + ")";
+        document.getElementById("demo_mousedown").innerHTML = coor;
+        x_down = x;
+        y_down = y;
+    }
+    function mouseUp(e) {
+        let x = e.clientX;
+        let y = e.clientY;
+        let coor = "Mouse up: (" + x + "," + y + ")";
+        document.getElementById("demo_mouseup").innerHTML = coor;
+        if (x_down == null) {
+        }
+        else {
+            let x_delta = x - x_down;
+            let y_delta = y - y_down;
+            let coor_delta = "Mouse delta: (" + x_delta + "," + y_delta + ")";
+            document.getElementById("demo_mousedelta").innerHTML = coor_delta;
+        }
+        x_down = null;
+        y_down = null;
+    }
+    function mouseOut() {
+        document.getElementById("demo_mousemove").innerHTML = "Coordinates:";
+    }
+</script>
+
+</body>
+</html>

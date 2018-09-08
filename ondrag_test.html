@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+.droptarget {
+    float: left; 
+    width: 100px; 
+    height: 35px;
+    margin: 15px;
+    padding: 10px;
+    border: 1px solid #aaaaaa;
+}
+</style>
+</head>
+<body>
+
+<p ondragstart="dragStart(event)" ondrag="dragging(event)" ondragover="dragend(event)" draggable="true" id="dragtarget">Drag me!</p>
+
+
+<script>
+function dragStart(event) {
+    console.log("drag start");
+}
+
+function dragging(event) {
+    console.log("dragging");
+}
+
+function dragend(event) {
+    console.log("drag end");
+}
+</script>
+
+</body>
+</html>
